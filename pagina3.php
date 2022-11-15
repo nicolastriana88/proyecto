@@ -2,6 +2,16 @@
 <head>
 <title>Listado</title>
 </head>
+<style>
+    body{
+        background-color: #6A5ACD
+       
+            }
+          
+
+
+
+ </style>   
 <body>
 <?php
 $instruments_sound = mysqli_connect("localhost", "root", "",

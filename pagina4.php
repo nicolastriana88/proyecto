@@ -2,6 +2,16 @@
 <head>
 <title>Busqueda</title>
 </head>
+<style>
+    body{
+        background-color: #6A5ACD
+       
+            }
+          
+
+
+
+ </style>   
 <body>
 <form action="Pagina5.php"
 method="post">

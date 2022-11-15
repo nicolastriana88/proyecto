@@ -8,8 +8,18 @@
 </head>
 <style>
     body{
-        background-color: #808080
-    }
+        background-color: #6A5ACD
+       
+            }
+          
+h1{
+    font-family: verdana;
+    font-size:42px;
+    text-align: center;
+    color:white;
+}
+
+
  </style>   
 <body>
     <h1> Registro usuarios Instruments Sound </h1>

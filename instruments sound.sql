@@ -1,4 +1,3 @@
-
 /* creacion base de datos */
 
 drop database if exists instruments_sound;
@@ -80,6 +79,12 @@ select nombre,stock from productos;
 select direccion,estado from pedido;
 select direccion,fecha_p, estado from pedido;
 
+/*ordenar */
+select * from usuarios
+order by nombre asc;
+
+select * from productos order by nombre desc;
+
 
 /* vistas */
 
@@ -92,8 +97,6 @@ select * from vista_pedidos_pendientes;
 
 
 /* drop view if exists vista_compra_sencilla;
-
-
 select * from vista_compra_sencilla
 */
 
@@ -128,36 +131,6 @@ call Proc_instrumentos_precio_bajos();
 
 /* triggers */
 
-drop trigger if exists before_compra_insert;  
 
-delimiter //
- create trigger before_compra_insert
-   before insert
-   on compra
-   for each row
- begin
-   update productos set stock=productos.stock-new.stock
-     where new.codigo_producto=productos.codigo_compra; 
- end //
- delimiter ;
- 
- insert into compra(codigo_compra,total_a_pagar)
-  values(005,230000); 
-  
-  
-drop trigger if exists  actualizarPrecioProducto;
-  
-DELIMITER $$
-CREATE TRIGGER actualizarPrecioProducto
-BEFORE UPDATE ON productos
-FOR EACH ROW
-BEGIN
-  IF NEW.precio <> OLD.precio
-    THEN
-      SET NEW.valor    = NEW.precio * 2;
-  END IF ;
-END$$
-DELIMITER ;
-
-
+/* joins */
 

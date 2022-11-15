@@ -2,6 +2,16 @@
 <head>
 <title>actulizar datos</title>
 </head>
+<style>
+    body{
+        background-color: #6A5ACD
+       
+            }
+          
+
+
+
+ </style>   
 <body>
 <form action="pagina9.php"
 method="post">

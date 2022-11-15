@@ -6,6 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro exitoso</title>
 </head>
+<style>
+    body{
+        background-color: #6A5ACD
+       
+            }
+          
+
+
+
+ </style>   
 <body>
 <?php
 $instruments_sound = mysqli_connect("localhost", "root", "", "instruments_sound") or

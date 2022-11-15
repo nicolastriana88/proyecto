@@ -2,6 +2,16 @@
 <head>
 <title>borrar datos</title>
 </head>
+<style>
+    body{
+        background-color: #6A5ACD
+       
+            }
+          
+
+
+
+ </style>   
 <body>
 <form action="pagina7.php"
 method="post">
