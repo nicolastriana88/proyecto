@@ -3,18 +3,28 @@
 drop database if exists instruments_sound;
 create database instruments_sound;
 use instruments_sound;
+SET SQL_SAFE_UPDATES = 0;
 
 /* creacion tablas */
 
+
+drop table if exists usuarios;
 create table usuarios(identificacion int auto_increment, correo varchar (100) not null, nombre varchar(40) not null, apellidos varchar(40) not null,
  contraseña varchar (40) not null, estado char (2) not null, rol varchar (50), primary key(identificacion));
  
+ drop table if exists productos;
 create table productos(codigo_producto int, nombre varchar (40), precio float, stock int, referencia varchar (100),primary key(codigo_producto));
 
-create table compra(codigo_compra int,total_a_pagar float,primary key(codigo_compra)); /* trigger con esta tabla */ 
+drop table if exists compra;
+create table compra(codigo_compra int,total_a_pagar float,primary key(codigo_compra)); 
 
+drop table if exists pedido;
 create table pedido(codigo_pedido int auto_increment, direccion varchar (50), fecha_p date, iva float,
 precio_total float, forma_de_pago varchar (100), estado char(2),primary key(codigo_pedido));
+
+drop table if exists usuarios_cache;
+create table usuarios_cache(identificacion int auto_increment, correo varchar (100) not null, nombre varchar(40) not null, apellidos varchar(40) not null,
+ contraseña varchar (40) not null, estado char (2) not null, rol varchar (50), primary key(identificacion)); 
 
 /* insertar datos */
 
@@ -38,20 +48,20 @@ values (113, 'piano', '4000000', 4, 'pia88');
 insert into productos(codigo_producto,nombre,precio,stock,referencia)
 values (114, 'bajo', '2000000', 7, 'baj02');
 
-insert into compra(codigo_compra,total_a_pagar) values (0001, 9500000);
-insert into compra(codigo_compra,total_a_pagar) values (0002, 3500000);
-insert into compra(codigo_compra,total_a_pagar) values (0003, 4700000);
-insert into compra(codigo_compra,total_a_pagar) values (0004, 6500000);
+insert into compra(codigo_compra,total_a_pagar) values (111, 9500000);
+insert into compra(codigo_compra,total_a_pagar) values (112, 3500000);
+insert into compra(codigo_compra,total_a_pagar) values (113, 4700000);
+insert into compra(codigo_compra,total_a_pagar) values (114, 6500000);
 
 
 insert into pedido(codigo_pedido,direccion,fecha_p,iva,precio_total,forma_de_pago,estado)
-values (001, 'cra15calle11', '2022/11/17', 0.16, 9200000, 'daviplata', 1);
+values (111, 'cra15calle11', '2022/11/17', 0.16, 9200000, 'daviplata', 1);
 insert into pedido(codigo_pedido,direccion,fecha_p,iva,precio_total,forma_de_pago,estado)
-values (002, 'cra20calle4', '2022/11/04', 0.16, 3200000, 'tarjeta de credito visa', 2);
+values (112, 'cra20calle4', '2022/11/04', 0.16, 3200000, 'tarjeta de credito visa', 2);
 insert into pedido(codigo_pedido,direccion,fecha_p,iva,precio_total,forma_de_pago,estado)
-values (003, 'cra100calle8', '2022/12/01', 0.16, 4500000, 'nequi', 1);
+values (113, 'cra100calle8', '2022/12/01', 0.16, 4500000, 'nequi', 1);
 insert into pedido(codigo_pedido,direccion,fecha_p,iva,precio_total,forma_de_pago,estado)
-values (004, 'cra15calle9', '2022/11/20', 0.16, 6300000, 'efectivo', 1);
+values (114, 'cra15calle9', '2022/11/20', 0.16, 6300000, 'efectivo', 1);
 
 
 /* verficacion de datos */
@@ -95,10 +105,7 @@ where estado =1;
 
 select * from vista_pedidos_pendientes;
 
-
-/* drop view if exists vista_compra_sencilla;
-select * from vista_compra_sencilla
-*/
+/* */
 
 drop view if exists vista_datos_usuarios;
 create view vista_datos_usuarios as
@@ -131,6 +138,72 @@ call Proc_instrumentos_precio_bajos();
 
 /* triggers */
 
+select * from usuarios;
+
+drop trigger if exists before_usuarios_update;
+delimiter //
+create trigger before_usuarios_update
+  before update
+  on usuarios
+  for each row
+begin
+  insert into usuarios_cache(nombre, correo) values (old.nombre, old.correo); 
+end //
+delimiter ;
+update usuarios set correo='avengerhulk@gmail.com' where nombre='bruce';
+select * from usuarios;
+select * from usuarios_cache;
+
+/* */
+
+drop trigger if exists before_pedido_insert;  
+ delimiter //
+ create trigger before_pedido_insert
+   before insert
+   on pedido
+   for each row
+ begin
+   update productos set stock=productos.stock-new.cantidad
+     where new.codigolibro=libros.codigo; 
+ end //
+ delimiter ;
+
+ drop trigger if exists before_pedido_delete;  
+ delimiter //
+ create trigger before_pedido_delete
+   before delete
+   on pedido
+   for each row
+ begin
+  update productos set stock=productos.stock+old.cantidad
+     where old.codigo_producto=producto.codigo;   
+ end //
+ delimiter ;
+
 
 /* joins */
 
+select * from productos;
+select * from compra;
+
+select * from productos 
+join compra
+on productos.codigo_producto=compra.codigo_compra;
+
+select * from productos as p
+  join compra as c
+  on p.codigo_producto=c.codigo_compra;
+  
+  /* */
+  
+select * from compra;
+select * from pedido;
+
+select * from pedido
+join compra
+on pedido.codigo_pedido=compra.codigo_compra;
+
+select * from pedido as p
+  join compra as c
+  on p.codigo_pedido=c.codigo_compra;
+  
