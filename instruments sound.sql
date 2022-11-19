@@ -20,7 +20,7 @@ create table compra(codigo_compra int,total_a_pagar float,primary key(codigo_com
 
 drop table if exists pedido;
 create table pedido(codigo_pedido int auto_increment, direccion varchar (50), fecha_p date, iva float,
-precio_total float, forma_de_pago varchar (100), estado char(2),primary key(codigo_pedido));
+precio_total float, forma_de_pago varchar (100),cantidad int, estado char(2),primary key(codigo_pedido));
 
 drop table if exists usuarios_cache;
 create table usuarios_cache(identificacion int auto_increment, correo varchar (100) not null, nombre varchar(40) not null, apellidos varchar(40) not null,
@@ -54,14 +54,14 @@ insert into compra(codigo_compra,total_a_pagar) values (113, 4700000);
 insert into compra(codigo_compra,total_a_pagar) values (114, 6500000);
 
 
-insert into pedido(codigo_pedido,direccion,fecha_p,iva,precio_total,forma_de_pago,estado)
-values (111, 'cra15calle11', '2022/11/17', 0.16, 9200000, 'daviplata', 1);
-insert into pedido(codigo_pedido,direccion,fecha_p,iva,precio_total,forma_de_pago,estado)
-values (112, 'cra20calle4', '2022/11/04', 0.16, 3200000, 'tarjeta de credito visa', 2);
-insert into pedido(codigo_pedido,direccion,fecha_p,iva,precio_total,forma_de_pago,estado)
-values (113, 'cra100calle8', '2022/12/01', 0.16, 4500000, 'nequi', 1);
-insert into pedido(codigo_pedido,direccion,fecha_p,iva,precio_total,forma_de_pago,estado)
-values (114, 'cra15calle9', '2022/11/20', 0.16, 6300000, 'efectivo', 1);
+insert into pedido(codigo_pedido,direccion,fecha_p,iva,precio_total,forma_de_pago,cantidad,estado)
+values (111, 'cra15calle11', '2022/11/17', 0.16, 9200000, 'daviplata',2, 1);
+insert into pedido(codigo_pedido,direccion,fecha_p,iva,precio_total,forma_de_pago,cantidad,estado)
+values (112, 'cra20calle4', '2022/11/04', 0.16, 3200000, 'tarjeta de credito visa',1, 2);
+insert into pedido(codigo_pedido,direccion,fecha_p,iva,precio_total,forma_de_pago,cantidad,estado)
+values (113, 'cra100calle8', '2022/12/01', 0.16, 4500000, 'nequi',3, 1);
+insert into pedido(codigo_pedido,direccion,fecha_p,iva,precio_total,forma_de_pago,cantidad,estado)
+values (114, 'cra15calle9', '2022/11/20', 0.16, 6300000, 'efectivo',2, 1);
 
 
 /* verficacion de datos */
@@ -164,7 +164,7 @@ drop trigger if exists before_pedido_insert;
    for each row
  begin
    update productos set stock=productos.stock-new.cantidad
-     where new.codigolibro=libros.codigo; 
+     where new.codigo_pedido=productos.codigo_producto; 
  end //
  delimiter ;
 
@@ -176,9 +176,20 @@ drop trigger if exists before_pedido_insert;
    for each row
  begin
   update productos set stock=productos.stock+old.cantidad
-     where old.codigo_producto=producto.codigo;   
+     where old.codigo_pedido=productos.codigo_producto;   
  end //
  delimiter ;
+
+select * from productos;
+insert into pedido(codigo_pedido,direccion,fecha_p,iva,precio_total,forma_de_pago,cantidad,estado)
+values (111, 'cra15calle11', '2022/11/17', 0.16, 9200000, 'daviplata',2, 1);
+select * from productos;
+
+select * from productos;
+delete from pedido where codigo_pedido=111;
+select * from productos;
+
+
 
 
 /* joins */
